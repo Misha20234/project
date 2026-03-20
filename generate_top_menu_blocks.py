@@ -22,6 +22,34 @@ FOOTERS_DIV_RE = re.compile(
     re.IGNORECASE,
 )
 
+TOP_MENU_EXISTING_STYLE_TAG = (
+    '<style data-id="top-menu-existing-style">'
+    '.footers_static_data .losb-body{height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"]{position:relative!important;overflow:visible!important;padding-top:2px!important;width:100%!important;max-width:100%!important;display:flex!important;align-items:stretch!important;gap:14px!important;box-sizing:border-box!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-content-level-left{flex:0 0 24%!important;min-width:150px!important;max-width:260px!important;height:auto!important;max-height:none!important;overflow-y:visible!important;overflow-x:visible!important;display:flex!important;flex-direction:column!important;padding-right:12px!important;border-right:1px solid #a9aea8!important;box-sizing:border-box!important;float:none!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-menu-element-sub{display:block!important;padding:2px 8px 2px 6px!important;text-decoration:none!important;color:#4e554d!important;line-height:1.3!important;border:1px solid transparent!important;font-size:16px!important;background:transparent!important;cursor:pointer!important;text-align:left!important;width:100%!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-menu-element-sub > a{display:block!important;color:inherit!important;text-decoration:none!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-menu-element-sub.active{border-color:#95bfc0!important;background:#f4fbfb!important;color:#5f8d8c!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-content-level-right{flex:1 1 auto!important;min-width:0!important;width:auto!important;max-width:none!important;height:auto!important;max-height:none!important;overflow:visible!important;padding-left:14px!important;box-sizing:border-box!important;position:relative!important;float:none!important;display:block!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-content-sub{width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;max-height:none!important;overflow:visible!important;position:absolute!important;left:100%!important;top:0!important;opacity:0!important;pointer-events:none!important;transition:left .18s ease-in-out,opacity .18s ease-in-out!important;display:block!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-content-sub.active{position:relative!important;left:0!important;opacity:1!important;pointer-events:auto!important;height:auto!important;max-height:none!important;overflow:visible!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-menu-result{display:inline-block!important;width:33.333%!important;max-width:33.333%!important;vertical-align:top!important;box-sizing:border-box!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-menu-result:not(:last-child){border-right:1px solid #a9aea8!important;padding-right:18px!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-menu-result:not(:first-child){padding-left:18px!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-link{display:block!important;text-decoration:none!important;color:#5f665f!important;line-height:1.3!important;font-size:16px!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] p{margin:0 0 4px 0!important;display:block!important;width:100%!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-link:hover{color:#2f342f!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"]::after{content:"";display:block;clear:both}'
+    '@media (max-width:900px){'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-content-level-left{width:100%!important;max-width:100%!important;min-width:auto!important;border-right:none!important;padding-right:0!important;margin-bottom:10px!important;float:none!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-content-level-right{width:100%!important;max-width:100%!important;padding-left:0!important;float:none!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-content-sub{position:absolute!important;left:100%!important;top:0!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-content-sub.active{position:relative!important;left:0!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-menu-result{display:block;width:100%!important;border-right:none!important;padding:0 0 10px 0!important}'
+    "}"
+    "</style>"
+)
+
 
 def clean_text(value: object) -> str:
     if value is None:
@@ -456,31 +484,6 @@ def render_top_menu_content_for_existing(menu_data: dict | None) -> str:
 
     html: list[str] = []
     html.append('<div class="losb-content " data-id="losb-content-top_menu">')
-    html.append(
-        "<style>"
-        '.losb-content[data-id="losb-content-top_menu"]{position:relative;overflow:hidden;padding-top:2px}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-content-level-left{width:24%;min-width:230px;display:flex;flex-direction:column;padding-right:12px;border-right:1px solid #a9aea8;box-sizing:border-box;float:left}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-menu-element-sub{display:block;padding:2px 8px 2px 6px;text-decoration:none;color:#4e554d;line-height:1.3;border:1px solid transparent;font-size:16px;background:transparent;cursor:pointer;text-align:left}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-menu-element-sub > a{display:block;color:inherit;text-decoration:none}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-menu-element-sub.active{border-color:#95bfc0;background:#f4fbfb;color:#5f8d8c}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-content-level-right{width:76%;padding-left:14px;box-sizing:border-box;position:relative;overflow:hidden;float:left}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-content-sub{width:100%;position:absolute;left:100%;top:0;opacity:0;pointer-events:none;transition:left .18s ease-in-out,opacity .18s ease-in-out}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-content-sub.active{position:relative;left:0;opacity:1;pointer-events:auto}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-menu-result{display:inline-block;width:33.333%;vertical-align:top;box-sizing:border-box}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-menu-result:not(:last-child){border-right:1px solid #a9aea8;padding-right:18px}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-menu-result:not(:first-child){padding-left:18px}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-link{display:block;text-decoration:none;color:#5f665f;line-height:1.3;font-size:16px}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-link:hover{color:#2f342f}'
-        '.losb-content[data-id="losb-content-top_menu"]::after{content:"";display:block;clear:both}'
-        '@media (max-width:900px){'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-content-level-left{width:100%;min-width:auto;border-right:none;padding-right:0;margin-bottom:10px;float:none}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-content-level-right{width:100%;padding-left:0;float:none}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-content-sub{position:absolute;left:100%;top:0}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-content-sub.active{position:relative;left:0}'
-        '.losb-content[data-id="losb-content-top_menu"] .losb-menu-result{display:block;width:100%!important;border-right:none!important;padding:0 0 10px 0!important}'
-        "}"
-        "</style>"
-    )
     html.append('<div class="losb-content-level-left">')
     for idx, (name, href) in enumerate(left_items, start=1):
         active_cls = " active" if idx == 1 else ""
@@ -518,9 +521,16 @@ def add_top_menu_to_existing_footer(block_html: str, menu_data: dict | None) -> 
         return block_html
 
     block = re.sub(
-        r'<span\b[^>]*class=["\'][^"\']*losb-menu-element[^"\']*["\'][^>]*data-id=["\']top_menu["\'][^>]*>.*?</span>',
+        r'<style\b[^>]*data-id=["\']top-menu-existing-style["\'][^>]*>.*?</style>',
         "",
         block_html,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+
+    block = re.sub(
+        r'<span\b[^>]*class=["\'][^"\']*losb-menu-element[^"\']*["\'][^>]*data-id=["\']top_menu["\'][^>]*>.*?</span>',
+        "",
+        block,
         flags=re.IGNORECASE | re.DOTALL,
     )
     block = remove_div_by_data_id(block, "losb-content-top_menu")
@@ -538,6 +548,12 @@ def add_top_menu_to_existing_footer(block_html: str, menu_data: dict | None) -> 
         return block
     menu_tab = '<span class="losb-menu-element " data-id="top_menu">Топ меню</span>'
     block = block[:menu_close] + menu_tab + block[menu_close:]
+
+    # Keep styles outside .losb-block because project CSS has ".losb-block * { display:flex; }".
+    # If style tag is inside .losb-block, its CSS text can become visible in the layout.
+    footers_match = FOOTERS_DIV_RE.search(block)
+    if footers_match:
+        block = block[: footers_match.end()] + TOP_MENU_EXISTING_STYLE_TAG + block[footers_match.end() :]
 
     body_match = re.search(
         r'<div\b[^>]*class=["\'][^"\']*losb-body[^"\']*["\'][^>]*>',
