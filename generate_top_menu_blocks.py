@@ -24,13 +24,14 @@ FOOTERS_DIV_RE = re.compile(
 
 TOP_MENU_EXISTING_STYLE_TAG = (
     '<style data-id="top-menu-existing-style">'
-    '.footers_static_data .losb-body{height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important}'
-    '.footers_static_data .losb-content[data-id="losb-content-top_menu"]{position:relative!important;overflow:visible!important;padding-top:2px!important;width:100%!important;max-width:100%!important;display:flex!important;align-items:stretch!important;gap:14px!important;box-sizing:border-box!important}'
-    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-content-level-left{flex:0 0 24%!important;min-width:150px!important;max-width:260px!important;height:auto!important;max-height:none!important;overflow-y:visible!important;overflow-x:visible!important;display:flex!important;flex-direction:column!important;padding-right:12px!important;border-right:1px solid #a9aea8!important;box-sizing:border-box!important;float:none!important}'
+    '.footers_static_data .losb-body{overflow:hidden!important}'
+    '.footers_static_data .losb-body.top-menu-active{height:auto!important;max-height:none!important;min-height:0!important;overflow:hidden!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"]{position:relative!important;overflow:visible!important;padding-top:2px!important;width:100%!important;max-width:100%!important;height:auto!important;min-height:0!important;display:flex!important;align-items:flex-start!important;gap:14px!important;box-sizing:border-box!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-content-level-left{flex:0 0 24%!important;min-width:150px!important;max-width:260px!important;height:auto!important;max-height:none!important;overflow-y:visible!important;overflow-x:visible!important;display:flex!important;flex-direction:column!important;align-self:flex-start!important;padding-right:12px!important;border-right:1px solid #a9aea8!important;box-sizing:border-box!important;float:none!important}'
     '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-menu-element-sub{display:block!important;padding:2px 8px 2px 6px!important;text-decoration:none!important;color:#4e554d!important;line-height:1.3!important;border:1px solid transparent!important;font-size:16px!important;background:transparent!important;cursor:pointer!important;text-align:left!important;width:100%!important}'
     '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-menu-element-sub > a{display:block!important;color:inherit!important;text-decoration:none!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important}'
     '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-menu-element-sub.active{border-color:#95bfc0!important;background:#f4fbfb!important;color:#5f8d8c!important}'
-    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-content-level-right{flex:1 1 auto!important;min-width:0!important;width:auto!important;max-width:none!important;height:auto!important;max-height:none!important;overflow:visible!important;padding-left:14px!important;box-sizing:border-box!important;position:relative!important;float:none!important;display:block!important}'
+    '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-content-level-right{flex:1 1 auto!important;min-width:0!important;width:auto!important;max-width:none!important;height:auto!important;max-height:none!important;overflow:visible!important;align-self:flex-start!important;padding-left:14px!important;box-sizing:border-box!important;position:relative!important;float:none!important;display:block!important}'
     '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-content-sub{width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;max-height:none!important;overflow:visible!important;position:absolute!important;left:100%!important;top:0!important;opacity:0!important;pointer-events:none!important;transition:left .18s ease-in-out,opacity .18s ease-in-out!important;display:block!important}'
     '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-content-sub.active{position:relative!important;left:0!important;opacity:1!important;pointer-events:auto!important;height:auto!important;max-height:none!important;overflow:visible!important}'
     '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-menu-result{display:inline-block!important;width:33.333%!important;max-width:33.333%!important;vertical-align:top!important;box-sizing:border-box!important}'
@@ -48,6 +49,43 @@ TOP_MENU_EXISTING_STYLE_TAG = (
     '.footers_static_data .losb-content[data-id="losb-content-top_menu"] .losb-menu-result{display:block;width:100%!important;border-right:none!important;padding:0 0 10px 0!important}'
     "}"
     "</style>"
+)
+
+TOP_MENU_EXISTING_SCRIPT_TAG = (
+    '<script data-id="top-menu-existing-script">'
+    "(function(){"
+    "const root=document.currentScript.closest('.footers_static_data');"
+    "if(!root||root.dataset.topMenuBodyInit==='1'){return;}"
+    "root.dataset.topMenuBodyInit='1';"
+    "const body=root.querySelector('.losb-body');"
+    "if(!body){return;}"
+    "const defaultHeight=body.style.height||window.getComputedStyle(body).height;"
+    "const calcTopMenuHeight=(active)=>{"
+    "if(!active){return 0;}"
+    "const left=active.querySelector('.losb-content-level-left');"
+    "const sub=active.querySelector('.losb-content-sub.active');"
+    "const rectH=(el)=>el?Math.ceil(el.getBoundingClientRect().height):0;"
+    "const leftH=Math.max(left?left.scrollHeight:0,rectH(left));"
+    "const subH=Math.max(sub?sub.scrollHeight:0,sub?sub.offsetHeight:0,rectH(sub));"
+    "const max=Math.max(leftH,subH);"
+    "return max+10;"
+    "};"
+    "const sync=()=>{"
+    "const active=root.querySelector('.losb-content.active');"
+    "const isTop=!!active&&active.getAttribute('data-id')==='losb-content-top_menu';"
+    "body.classList.toggle('top-menu-active',isTop);"
+    "if(isTop&&active){body.style.height='auto';const h=calcTopMenuHeight(active);body.style.height=(h>0?h:active.scrollHeight+10)+'px';}"
+    "else{body.style.height=defaultHeight;}"
+    "};"
+    "const resync=()=>{sync();setTimeout(sync,40);setTimeout(sync,180);};"
+    "root.querySelectorAll('.losb-menu-element').forEach((el)=>el.addEventListener('click',()=>setTimeout(resync,0)));"
+    "root.querySelectorAll('.losb-menu-element-sub').forEach((el)=>el.addEventListener('click',()=>setTimeout(resync,0)));"
+    "window.addEventListener('resize',sync);"
+    "window.addEventListener('load',resync);"
+    "if(document.fonts&&document.fonts.ready){document.fonts.ready.then(resync).catch(()=>{});}"
+    "setTimeout(resync,0);"
+    "})();"
+    "</script>"
 )
 
 
@@ -526,6 +564,12 @@ def add_top_menu_to_existing_footer(block_html: str, menu_data: dict | None) -> 
         block_html,
         flags=re.IGNORECASE | re.DOTALL,
     )
+    block = re.sub(
+        r'<script\b[^>]*data-id=["\']top-menu-existing-script["\'][^>]*>.*?</script>',
+        "",
+        block,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
 
     block = re.sub(
         r'<span\b[^>]*class=["\'][^"\']*losb-menu-element[^"\']*["\'][^>]*data-id=["\']top_menu["\'][^>]*>.*?</span>',
@@ -553,7 +597,12 @@ def add_top_menu_to_existing_footer(block_html: str, menu_data: dict | None) -> 
     # If style tag is inside .losb-block, its CSS text can become visible in the layout.
     footers_match = FOOTERS_DIV_RE.search(block)
     if footers_match:
-        block = block[: footers_match.end()] + TOP_MENU_EXISTING_STYLE_TAG + block[footers_match.end() :]
+        block = (
+            block[: footers_match.end()]
+            + TOP_MENU_EXISTING_STYLE_TAG
+            + TOP_MENU_EXISTING_SCRIPT_TAG
+            + block[footers_match.end() :]
+        )
 
     body_match = re.search(
         r'<div\b[^>]*class=["\'][^"\']*losb-body[^"\']*["\'][^>]*>',
